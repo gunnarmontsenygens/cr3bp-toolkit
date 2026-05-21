@@ -1,2 +1,2 @@
-# cr3bp-toolkit
+# CR3BP Toolkit
 
