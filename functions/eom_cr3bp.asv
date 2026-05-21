@@ -1,0 +1,57 @@
+function dx_dt_vec =  eom_cr3bp(t, x_vec, params)
+%==========================================================================
+%
+% Computes  CR3BP Lagrangian equations of motion in synodic frame.
+% State vector is defined as x = [x y z v_x v_y v_z]^T.
+% Always integrated in dimensionless.
+%
+% Author: G. Montseny
+% Date: May 4, 2026
+%
+%
+% INPUT:               Description                                   Units
+%
+%  t         -   time                                               -
+%  x_vec     -   state vector (6x1)                                 -
+%  params    -   parameter struct                                   -
+%
+% OUTPUT:
+%
+%  dx_dt_vec -   time derivative of state (6x1)                     -
+%==========================================================================
+
+    % Initialization
+    x_vec = x_vec(:);
+    dx_dt_vec = zeros(size(x_vec));
+
+    % Extract oarams
+    mu = params.mu;
+    r_1_vec = [-mu, 0, 0]';
+
+    % Extract values from x_vec
+    x = x_vec(1);
+    y = x_vec(2);
+    z = x_vec(3);
+    v_x = x_vec(4);
+    v_y = x_vec(5);
+    v_z = x_vec(6);
+    
+    % Calculate important quantities
+    r_vec = [x; y; z];
+    r_13 = norm(r_vec-r_1_vec);
+    r_23 = norm(r_vec-r_2_vec);
+
+    % Potential V = 0.5*(x^2+y^2) + U(x,y,z) derivatives
+    dVdx = x - (1-mu)*(x-x_1)/r_13^3 - mu*(x-x_2)/r_23^3;
+    dVdy = y - (1-mu)*y/r_13^3 - mu*y/r_23^3;
+    dVdz = - (1-mu)*z/r_13^3 - mu*z/r_23^3;
+
+    % Lagrangian EoM
+    dx_dt_vec(1) = v_x;
+    dx_dt_vec(2) = v_y;
+    dx_dt_vec(3) = v_z;
+    dx_dt_vec(4) = 2*v_y + dVdx;
+    dx_dt_vec(5) = -2*v_x + dVdy;
+    dx_dt_vec(5) = dVdz;
+
+end
