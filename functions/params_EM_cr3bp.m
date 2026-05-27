@@ -46,6 +46,7 @@ function params = params_EM_cr3bp()
     % Functions
     %-------------------------------
     params.fun.eom = @eom_cr3bp;
+    params.fun.integrate = @integrate_cr3bp;
 
     %-------------------------------
     % Scaling (useful later)
