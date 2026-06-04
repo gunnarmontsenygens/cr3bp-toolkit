@@ -99,10 +99,6 @@ function [t_hist, x_vec_hist, Phi_mtx_hist, i_e, t_e, x_e_vec, Phi_mtx_e] = inte
     % Extract base ODE options from params 
     ode_options = params.ode.options;
     
-    % Implement event in case it's not empy
-    if ~isempty(event_fun)
-        ode_options = odeset(ode_options, 'Events', @(t,Y) event_fun(t,Y,params));
-    end
     
     % Initialization
     x_0_vec = x_0_vec(:);
@@ -122,6 +118,9 @@ function [t_hist, x_vec_hist, Phi_mtx_hist, i_e, t_e, x_e_vec, Phi_mtx_e] = inte
         i_e = [];
 
     else
+        
+        ode_options = odeset(ode_options, 'Events', @(t,Y) event_fun(t,Y, params));
+
         [t_hist, X_vec_hist, t_e, X_e_vec, i_e] = ode113(@(t,X) eom_ext_cr3bp(t, X, params), t_span, X_0_vec, ode_options);
     
         x_e_vec = X_e_vec(:,1:n);
